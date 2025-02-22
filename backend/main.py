@@ -11,14 +11,17 @@ app = FastAPI()
 async def upload_pdf(file: UploadFile = File(...)):
     poppler_path = "/opt/homebrew/bin"  # Ensure this matches your Poppler installation path
 
-    images = convert_from_bytes(file.file.read(), dpi=300, poppler_path=poppler_path)
+    try:
+        images = convert_from_bytes(file.file.read(), dpi=300, poppler_path=poppler_path)
 
-    ocr_results = []
-    for page_number, image in enumerate(images):
-        text = pytesseract.image_to_string(image)
-        ocr_results.append({"page": page_number + 1, "text": text})
+        ocr_results = []
+        for page_number, image in enumerate(images):
+            text = pytesseract.image_to_string(image)
+            ocr_results.append({"page": page_number + 1, "text": text})
 
-    return JSONResponse(content={"ocr_results": ocr_results})
+        return JSONResponse(content={"ocr_results": ocr_results})
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
 
