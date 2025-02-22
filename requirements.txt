@@ -1,7 +1,9 @@
-streamlit
-requests
 fastapi
+uvicorn
 PyPDF2
 pytesseract
-Pillow
-uvicorn
+pillow
+streamlit
+request
+python-multipart
+pdf2image
