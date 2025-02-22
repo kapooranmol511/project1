@@ -4,6 +4,6 @@ PyPDF2
 pytesseract
 pillow
 streamlit
-request
+requests
 python-multipart
 pdf2image
