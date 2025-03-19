@@ -4,12 +4,13 @@ import requests
 
 st.title("PDF OCR Application")
 
+redact_toggle = st.checkbox("Redact sensitive information")
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
 
 if uploaded_file is not None:
     # Send the file to the FastAPI backend
     files = {"file": uploaded_file.getvalue()}
-    response = requests.post("http://localhost:8000/upload-pdf/", files=files)
+    response = requests.post("http://localhost:8000/upload-pdf/", files=files, params={"redact": redact_toggle})
 
     if response.status_code == 200:
         ocr_results = response.json().get("ocr_results", [])
