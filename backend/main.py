@@ -38,8 +38,3 @@ async def upload_pdf(file: UploadFile = File(...)):
             os.remove(file_path)
 
 
-
-
-
-
-
