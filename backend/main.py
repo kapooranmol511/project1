@@ -22,7 +22,7 @@ def redact_sensitive_info(text):
 
 @app.post("/upload-pdf/")
 async def upload_pdf(file: UploadFile = File(...), redact: bool = Query(False)):
-    poppler_path = "/opt/homebrew/bin"  # Update based on your Poppler installation
+    poppler_path = os.getenv("POPLER_PATH", "/opt/homebrew/bin")  # Ensure this path is correct for your system
 
     try:
         # Save the uploaded file to a temporary location
@@ -32,6 +32,8 @@ async def upload_pdf(file: UploadFile = File(...), redact: bool = Query(False)):
 
         # Convert PDF to images using the saved file
         images = convert_from_path(file_path, dpi=300, poppler_path=poppler_path)
+        if not images:
+            raise ValueError("No images were generated from the PDF.")
 
         # Perform OCR on each page
         ocr_results = []

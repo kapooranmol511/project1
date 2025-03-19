@@ -10,7 +10,13 @@ uploaded_file = st.sidebar.file_uploader("Upload a PDF file", type="pdf")
 
 if uploaded_file is not None:
     # Convert PDF to images
-    images = convert_from_bytes(uploaded_file.getvalue())
+    try:
+        images = convert_from_bytes(uploaded_file.getvalue())
+        if not images:
+            st.error("No images were generated from the PDF.")
+    except Exception as e:
+        st.error(f"Error converting PDF to images: {e}")
+        images = []
 
     # Send the file to the FastAPI backend
     files = {"file": uploaded_file.getvalue()}
