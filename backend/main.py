@@ -17,7 +17,7 @@ def redact_sensitive_info(text):
     redacted_text = text
     for ent in doc.ents:
         if ent.label_ in ["PERSON", "ORG", "GPE", "EMAIL", "PHONE"]:
-            redacted_text = redacted_text.replace(ent.text, "[REDACTED]")
+            redacted_text = redacted_text.replace(ent.text, "█████")
     return redacted_text
 
 @app.post("/upload-pdf/")

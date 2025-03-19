@@ -7,3 +7,4 @@ streamlit
 requests
 python-multipart
 pdf2image
+spacy
