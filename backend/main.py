@@ -1,28 +1,17 @@
-from fastapi import FastAPI, File, UploadFile, Query
-import spacy
-import re
+from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from pdf2image import convert_from_path
 import pytesseract
 import os
 import shutil
 
-nlp = spacy.load("en_core_web_sm")
 app = FastAPI()
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the upload directory exists
 
-def redact_sensitive_info(text):
-    doc = nlp(text)
-    redacted_text = text
-    for ent in doc.ents:
-        if ent.label_ in ["PERSON", "ORG", "GPE", "EMAIL", "PHONE"]:
-            redacted_text = redacted_text.replace(ent.text, "[REDACTED]")
-    return redacted_text
-
 @app.post("/upload-pdf/")
-async def upload_pdf(file: UploadFile = File(...), redact: bool = Query(False)):
+async def upload_pdf(file: UploadFile = File(...)):
     poppler_path = "/opt/homebrew/bin"  # Update based on your Poppler installation
 
     try:
@@ -38,8 +27,6 @@ async def upload_pdf(file: UploadFile = File(...), redact: bool = Query(False)):
         ocr_results = []
         for page_number, image in enumerate(images):
             text = pytesseract.image_to_string(image)
-            if redact:
-                text = redact_sensitive_info(text)
             ocr_results.append({"page": page_number + 1, "text": text})
 
         return JSONResponse(content={"ocr_results": ocr_results})
