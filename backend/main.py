@@ -22,8 +22,9 @@ def redact_sensitive_info(text):
 
 @app.post("/upload-pdf/")
 async def upload_pdf(file: UploadFile = File(...), redact: bool = Query(False)):
-    poppler_path = os.getenv("POPLER_PATH", "/opt/homebrew/bin")  # Ensure this path is correct for your system
-
+    # poppler_path = os.getenv("POPLER_PATH", "/opt/homebrew/bin")  # running on venv. 
+    poppler_path = os.getenv("POPLER_PATH", "/usr/bin/")     # docker
+    
     try:
         # Save the uploaded file to a temporary location
         file_path = os.path.join(UPLOAD_FOLDER, file.filename)
